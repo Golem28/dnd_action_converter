@@ -1,0 +1,6 @@
+# Exclude data files
+data/*
+unused_data/*
+
+# Exclude python cache files
+*.pyc
