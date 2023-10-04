@@ -3,6 +3,7 @@ from nltk.stem import WordNetLemmatizer
 from collections import Counter
 import random
 from typing import List
+from nltk.parse import DependencyGraph
 
 
 class ActionAnalyzer:
@@ -18,6 +19,8 @@ class ActionAnalyzer:
         nltk.download('stopwords')
         nltk.download('punkt')
         nltk.download('wordnet')
+        nltk.download('averaged_perceptron_tagger')
+        nltk.download("words")
         
     def get_action_descriptions(self) -> List[str]:
         """Tries to append each action description to a list of strings.
@@ -61,15 +64,11 @@ class ActionAnalyzer:
     def print_test_nltk_prework(self) -> None:
         """Prints the results of the nltk prework with a random action.
         """
-        descriptions = " ".join(self.get_random_action()["entries"]).lower()
+        descriptions = "\n".join(self.get_random_action()["entries"]).lower()
         print(descriptions)
-        words = nltk.word_tokenize(descriptions)
-        print(words)
-        lemmatizer = WordNetLemmatizer()
-        words = [lemmatizer.lemmatize(word) for word in words]
-        print(words)
-        stop_words = set(nltk.corpus.stopwords.words("english"))
-        words = [word for word in words if word not in stop_words]
-        print(words)
-
+        lotr_pos_tags = nltk.pos_tag(nltk.word_tokenize(descriptions))
+        grammar = "NP: {<DT>?<JJ>*<NN>}"
+        chunk_parser = nltk.RegexpParser(grammar)
+        tree = chunk_parser.parse(lotr_pos_tags)
+        tree.draw()
         

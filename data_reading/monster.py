@@ -1,5 +1,7 @@
 from .size import Size, get_size
 from .type import Type, get_type
+from typing import List
+from nltk import word_tokenize
 
 
 class Monster:
@@ -13,7 +15,89 @@ class Monster:
             monster (dict): A dictionary containing the monster data.
         """
         self._monster = monster
-        print(f"Monster created: {self.get_name()}")
+        self._remove_dicts_from_actions()
+        self._remove_monstername_from_actions()
+        
+    def _remove_dicts_from_actions(self) -> None:
+        """Removes lists from the actions.
+        """
+        for action in self.get_actions():
+            for index, entry in enumerate(action["entries"]):
+                if isinstance(entry, dict):
+                    entry = self._convert_action_dicts_to_string(entry)
+                    action["entries"][index] = entry
+                    
+                    
+    def _convert_action_dicts_to_string(self, action) -> str:
+        """Converts the action dictionaries to strings.
+
+        Args:
+            action (dict): The action to be converted.
+
+        Returns:
+            str: The converted action.
+        """
+        string_action: str = ""
+        
+        if action["type"] == "list":            
+            for subaction in action["items"]:
+                if isinstance(subaction, str):
+                    description = subaction
+                elif isinstance(subaction, dict):
+                    description = f"• [{subaction['name']}] {subaction['entry']}"
+                else:
+                    raise TypeError(f"Substructure type {type(subaction)} not supported.")
+                
+                string_action += description + "\n"
+        elif action["type"] == "table":
+            for labels in action["colLabels"]:
+                string_action += f"{labels}\t"
+            
+            string_action += "\n"
+            
+            for row in action["rows"]:
+                for entry in row:
+                    string_action += f"{entry}\t"
+                string_action += "\n"
+        else:
+            raise TypeError(f"Structure type {action['type']} not supported.")
+        
+        return string_action 
+        
+    def _remove_monstername_from_actions(self) -> None:
+        """Removes the monster name from the actions.
+        """
+        namelist = word_tokenize(self.get_name())
+        
+        for action in self.get_actions():
+            for index, entry in enumerate(action["entries"]):
+                entry = self._replace_name_searchpattern(namelist, entry)
+                action["entries"][index] = entry
+                    
+    def _replace_name_searchpattern(self, wordlist: List[str], sentence: str, replacement: str = "user") -> str:
+        """Replaces the shortnames in the sentence with the replacement.
+
+        Args:
+            wordlist (List[str]): List of the possible shortnames to be replace.
+            sentence (str): The sentence to be searched.
+            replacement (str, optional): The word for the new action user's name. Defaults to "user".
+
+        Returns:
+            str: The sentence with the shortnames replaced as the replacement.
+        """
+        sentence = sentence.lower()
+        
+        for word in wordlist:
+            word = word.lower()
+
+            if f"the {word}" in sentence:
+                sentence = sentence.replace(f"the {word}", replacement)
+            elif sentence.startswith(word):
+                sentence = sentence.replace(word, replacement, 1)
+            elif sentence.startswith(f"a {word}"):
+                sentence = sentence.replace(f"a {word}", replacement, 1)
+        
+        return sentence
 
     def get_name(self) -> str:
         return self._monster["name"]

@@ -27,19 +27,23 @@ class MonsterFileReader:
         for filename in os.listdir(self._folder_path):
             if not filename.endswith(".json"):
                 continue
+            
+            print(f"Processing {filename}...")
                 
             file_path = os.path.join(self._folder_path, filename)
+            
+            with open(file_path, "r") as file:
+                data: dict = json.load(file)
+                monsters_list: list = data.get("monster", [])
+                
+                for monster_data in monsters_list:
+                    monster = Monster(monster_data)
+                    valid_monsters.append(monster)
 
-            try:
-                with open(file_path, "r") as file:
-                    data: dict = json.load(file)
-                    monsters_list: list = data.get("monster", [])
-                    
-                    for monster_data in monsters_list:
-                        monster = Monster(monster_data)
-                        valid_monsters.append(monster)
+            """try:
+                
                         
             except Exception as e:
-                print(f"Error processing {filename}: {str(e)}")
+                print(f"Error processing {filename}: {str(e)}")"""
 
         return valid_monsters
