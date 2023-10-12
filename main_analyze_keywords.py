@@ -12,4 +12,4 @@ if __name__ == '__main__':
     monsters = file_reader.read_monsters()
     all_actions = [action for monster in monsters for action in monster.get_actions()]
     action_analyzer = ActionAnalyzer(all_actions)
-    action_analyzer.get_often_used_words()
+    action_analyzer.print_test_nltk_prework()
