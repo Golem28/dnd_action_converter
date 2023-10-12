@@ -8,6 +8,12 @@ def get_type(type: Union[str, dict]) -> 'Type':
     type = type.lower()
     return Type(type)
 
+def get_grammatik_list() -> str:
+    gr_list = []
+    for type in Type:
+        gr_list.append(f"({type.name.lower()})")
+    return "|".join(gr_list)
+
 class Type(Enum):
     """Available monster categories in D&D 5e.
     """

@@ -4,6 +4,12 @@ def get_damage_type(damage_type: str) -> 'DamageType':
     damage_type = damage_type.lower()
     return DamageType(damage_type)
 
+def get_grammatik_list() -> str:
+    gr_list = []
+    for damage_type in DamageType:
+        gr_list.append(f"({damage_type.name.lower()})")
+    return "|".join(gr_list)
+
 class DamageType(Enum):
     """Available damage types in D&D 5e.
     """

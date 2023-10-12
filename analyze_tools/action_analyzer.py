@@ -5,7 +5,6 @@ import random
 from typing import List
 from nltk.parse import DependencyGraph
 
-
 class ActionAnalyzer:
     
     def __init__(self, action_list: list) -> None:
@@ -67,8 +66,9 @@ class ActionAnalyzer:
         descriptions = "\n".join(self.get_random_action()["entries"]).lower()
         print(descriptions)
         lotr_pos_tags = nltk.pos_tag(nltk.word_tokenize(descriptions))
-        grammar = "NP: {<DT>?<JJ>*<NN>}"
-        chunk_parser = nltk.RegexpParser(grammar)
-        tree = chunk_parser.parse(lotr_pos_tags)
-        tree.draw()
+        print(lotr_pos_tags)
+        # grammar = "NP: {<DT>?<JJ>*<NN>}"
+        # chunk_parser = nltk.RegexpParser(grammar)
+        #tree = chunk_parser.parse(lotr_pos_tags)
+        #tree.draw()
         

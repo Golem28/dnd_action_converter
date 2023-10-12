@@ -1,5 +1,4 @@
-from .size import Size, get_size
-from .type import Type, get_type
+from data_parsing import get_size, get_type, Size, Type
 from typing import List
 from nltk import word_tokenize
 
